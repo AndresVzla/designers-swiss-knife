@@ -133,14 +133,7 @@ export function MeshGradientTool() {
     const handleSetNodeCount = (delta) => {
         const next = Math.min(Math.max(nodeCount + delta, 2), 6);
         setNodeCount(next);
-        const palette = PALETTES[activePalette].colors;
-        const positions = generatePos(next);
-        setNodes(positions.map((pos, i) => ({
-            color: palette[i % palette.length],
-            x: Math.min(Math.max(pos.x, 8), 92),
-            y: Math.min(Math.max(pos.y, 8), 92),
-            size: pos.size,
-        })));
+        setNodes(buildNodes(next, activePalette));
         setOpenPickerIndex(null);
     };
 
