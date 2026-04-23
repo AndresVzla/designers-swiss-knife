@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { UploadCloud, Pipette, Copy, X, Check, Image as ImageIcon } from 'lucide-react';
+import { UploadCloud, Pipette, Copy, X, Check, Image as ImageIcon, Plus, Download, Code } from 'lucide-react';
 
 // --- MATEMÁTICAS DE COLOR ---
 const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('').toUpperCase();
@@ -33,13 +33,20 @@ export const ImageColorPicker = () => {
     const [hoverColor, setHoverColor] = useState(null);
     const [pickedColors, setPickedColors] = useState([]);
     const [copiedIndex, setCopiedIndex] = useState(null);
+    const [mainCopied, setMainCopied] = useState(false);
+    const [cssCopied, setCssCopied] = useState(false);
     
     const canvasRef = useRef(null);
     const imgRef = useRef(null);
     const lensCanvasRef = useRef(null);
+    const hoverColorRef = useRef(null);
 
     // Detección de API Nativa
     const isEyeDropperSupported = 'EyeDropper' in window;
+
+    useEffect(() => {
+        hoverColorRef.current = hoverColor;
+    }, [hoverColor]);
 
     // Cargar imagen en Canvas
     useEffect(() => {
@@ -189,6 +196,32 @@ export const ImageColorPicker = () => {
         }
     };
 
+    const handleSaveHoveredColor = useCallback(() => {
+        const color = hoverColorRef.current;
+        if (color) {
+            setPickedColors(prev => {
+                if (prev.some(c => c.hex === color.hex)) return prev;
+                return [color, ...prev].slice(0, 10);
+            });
+        }
+    }, []);
+
+    // Atajos de teclado (QoL)
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            // Ignorar si el usuario está escribiendo en algún input (aunque aquí no hay)
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            
+            // Tecla S o Espacio para guardar
+            if (e.code === 'Space' || e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                handleSaveHoveredColor();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleSaveHoveredColor]);
+
     // Usar EyeDropper Nativo
     const useNativeEyeDropper = async () => {
         if (!isEyeDropperSupported) return;
@@ -230,6 +263,32 @@ export const ImageColorPicker = () => {
         setPickedColors(prev => prev.filter(c => c.hex !== hex));
     };
 
+    // Descargar Imagen (QoL)
+    const handleDownloadImage = () => {
+        if (!imageSrc) return;
+        const a = document.createElement('a');
+        a.href = imageSrc;
+        a.download = `swiss-knife-image-${Date.now()}.png`;
+        a.click();
+    };
+
+    // Copiar Color Principal Rápido (QoL)
+    const copyMainColor = () => {
+        if (!hoverColor) return;
+        navigator.clipboard.writeText(hoverColor.hex);
+        setMainCopied(true);
+        setTimeout(() => setMainCopied(false), 1500);
+    };
+
+    // Copiar Paleta a CSS (QoL)
+    const handleCopyCSS = () => {
+        if (pickedColors.length === 0) return;
+        const cssVars = pickedColors.map((c, i) => `  --color-${i + 1}: ${c.hex};`).join('\n');
+        navigator.clipboard.writeText(`:root {\n${cssVars}\n}`);
+        setCssCopied(true);
+        setTimeout(() => setCssCopied(false), 2000);
+    };
+
     return (
         <div className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-6 md:p-8 shadow-2xl animate-in fade-in zoom-in-95 duration-500">
             {/* Cabecera */}
@@ -259,9 +318,20 @@ export const ImageColorPicker = () => {
                 {/* 1. Preview de Color (Mobile: Arriba, Desktop: Derecha Arriba) */}
                 <div className="order-1 lg:col-span-4 lg:col-start-9 lg:row-start-1 h-fit">
                     <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 md:p-6 shadow-lg">
-                        <h3 className="text-sm font-bold tracking-widest text-zinc-500 uppercase mb-4 flex items-center gap-2">
-                            <ImageIcon size={16} /> Color Actual (Zoom)
-                        </h3>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-sm font-bold tracking-widest text-zinc-500 uppercase flex items-center gap-2">
+                                <ImageIcon size={16} /> Color Actual
+                            </h3>
+                            <button 
+                                onClick={handleSaveHoveredColor}
+                                disabled={!hoverColor}
+                                className={`lg:hidden px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-all ${
+                                    hoverColor ? 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-lg shadow-indigo-500/20' : 'bg-zinc-800 text-zinc-600 cursor-not-allowed'
+                                }`}
+                            >
+                                <Plus size={14} /> Guardar
+                            </button>
+                        </div>
                         <div className="flex items-center gap-4 md:gap-6">
                             <div 
                                 className="relative w-16 h-16 md:w-28 md:h-28 rounded-xl shadow-inner border-2 md:border-4 flex-shrink-0 bg-black overflow-hidden transition-colors duration-200"
@@ -278,11 +348,22 @@ export const ImageColorPicker = () => {
                                 )}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <div className="text-2xl md:text-4xl font-black text-white tracking-tight truncate mb-1">
+                                <div 
+                                    onClick={copyMainColor}
+                                    className="text-2xl md:text-4xl font-black text-white tracking-tight truncate mb-1 cursor-pointer hover:text-indigo-400 transition-colors flex items-center gap-2 group"
+                                    title="Clic para copiar"
+                                >
                                     {hoverColor ? hoverColor.hex : '—'}
+                                    {hoverColor && !mainCopied && <Copy size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-500" />}
+                                    {mainCopied && <span className="text-[10px] font-bold text-green-400 bg-green-400/10 px-2 py-1 rounded-md align-middle uppercase tracking-widest">¡Copiado!</span>}
                                 </div>
-                                <div className="text-xs md:text-sm font-mono text-zinc-400 truncate bg-zinc-800/50 inline-block px-2 py-1 rounded">
-                                    {hoverColor ? hoverColor.rgb : 'Esperando cursor...'}
+                                <div className="text-[10px] md:text-xs font-mono text-zinc-400 bg-zinc-800/50 inline-block px-2 py-1.5 rounded max-w-full leading-relaxed break-words">
+                                    {hoverColor ? hoverColor.rgb : (
+                                        <>
+                                            <span className="hidden lg:inline">Atajo: Presiona [S] para guardar</span>
+                                            <span className="lg:hidden">Presiona '+ Guardar' para capturar</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -317,14 +398,23 @@ export const ImageColorPicker = () => {
                         </div>
                     ) : (
                         <div className="relative group rounded-2xl overflow-hidden bg-black/50 border border-zinc-800">
-                            {/* Botón para cambiar imagen */}
-                            <button 
-                                onClick={() => setImageSrc(null)}
-                                className="absolute top-4 right-4 z-20 bg-black/60 hover:bg-red-500/80 backdrop-blur-md text-white p-2 rounded-lg transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100 shadow-lg"
-                                title="Cambiar imagen"
-                            >
-                                <X size={20} />
-                            </button>
+                            {/* Botones de acción de imagen */}
+                            <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+                                <button 
+                                    onClick={handleDownloadImage}
+                                    className="bg-black/60 hover:bg-indigo-500 backdrop-blur-md text-white p-2 rounded-lg transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100 shadow-lg"
+                                    title="Descargar imagen (Útil si pegaste desde portapapeles)"
+                                >
+                                    <Download size={20} />
+                                </button>
+                                <button 
+                                    onClick={() => setImageSrc(null)}
+                                    className="bg-black/60 hover:bg-red-500/80 backdrop-blur-md text-white p-2 rounded-lg transition-colors opacity-100 lg:opacity-0 lg:group-hover:opacity-100 shadow-lg"
+                                    title="Eliminar imagen"
+                                >
+                                    <X size={20} />
+                                </button>
+                            </div>
 
                             {/* Contenedor del Canvas */}
                             <div className="w-full h-[350px] md:h-[450px] flex items-center justify-center overflow-hidden cursor-crosshair relative">
@@ -398,12 +488,21 @@ export const ImageColorPicker = () => {
                             )}
                         </div>
                         {pickedColors.length > 0 && (
-                            <button 
-                                onClick={() => setPickedColors([])}
-                                className="w-full mt-4 text-xs font-bold text-zinc-500 hover:text-red-400 transition-colors uppercase tracking-widest"
-                            >
-                                Limpiar Lista
-                            </button>
+                            <div className="grid grid-cols-2 gap-2 mt-4">
+                                <button 
+                                    onClick={handleCopyCSS}
+                                    className="w-full text-[10px] sm:text-xs font-bold text-indigo-400 hover:text-white bg-indigo-500/10 hover:bg-indigo-500/30 py-2.5 rounded-lg transition-colors uppercase tracking-widest flex items-center justify-center gap-2"
+                                >
+                                    {cssCopied ? <Check size={14}/> : <Code size={14}/>}
+                                    {cssCopied ? '¡Copiado!' : 'Copiar CSS'}
+                                </button>
+                                <button 
+                                    onClick={() => setPickedColors([])}
+                                    className="w-full text-[10px] sm:text-xs font-bold text-zinc-400 hover:text-red-400 bg-zinc-800/50 hover:bg-zinc-800 py-2.5 rounded-lg transition-colors uppercase tracking-widest"
+                                >
+                                    Limpiar Lista
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
