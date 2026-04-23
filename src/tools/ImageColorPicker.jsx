@@ -304,7 +304,7 @@ export const ImageColorPicker = () => {
                 {isEyeDropperSupported && (
                     <button 
                         onClick={useNativeEyeDropper}
-                        className="px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
+                        className="w-full md:w-auto px-6 py-3 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white"
                         title="Usar cuentagotas en toda la pantalla"
                     >
                         <Pipette size={20} />
@@ -350,10 +350,10 @@ export const ImageColorPicker = () => {
                             <div className="flex-1 min-w-0">
                                 <div 
                                     onClick={copyMainColor}
-                                    className="text-2xl md:text-4xl font-black text-white tracking-tight truncate mb-1 cursor-pointer hover:text-indigo-400 transition-colors flex items-center gap-2 group"
-                                    title="Clic para copiar"
+                                    className={`text-2xl md:text-4xl font-black tracking-tight truncate mb-1 transition-colors flex items-center gap-2 group ${hoverColor ? 'text-white cursor-pointer hover:text-indigo-400' : 'text-zinc-600 cursor-default'}`}
+                                    title={hoverColor ? "Clic para copiar" : ""}
                                 >
-                                    {hoverColor ? hoverColor.hex : '—'}
+                                    {hoverColor ? hoverColor.hex : <span className="tracking-widest">#------</span>}
                                     {hoverColor && !mainCopied && <Copy size={16} className="opacity-0 group-hover:opacity-100 transition-opacity text-zinc-500" />}
                                     {mainCopied && <span className="text-[10px] font-bold text-green-400 bg-green-400/10 px-2 py-1 rounded-md align-middle uppercase tracking-widest">¡Copiado!</span>}
                                 </div>
@@ -391,9 +391,9 @@ export const ImageColorPicker = () => {
                                 <UploadCloud size={32} className="text-indigo-400" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">Sube una imagen</h3>
-                            <p className="text-zinc-400 text-center text-sm px-4">
-                                Arrastra y suelta, haz clic,<br className="md:hidden" />
-                                o presiona <span className="bg-zinc-800 text-white px-2 py-0.5 rounded font-mono">Ctrl+V</span>
+                            <p className="text-zinc-400 text-center text-sm px-4 leading-relaxed">
+                                Arrastra y suelta, haz clic, <br className="md:hidden" />
+                                o presiona <span className="bg-zinc-800 text-white px-2 py-0.5 rounded font-mono ml-1">Ctrl+V</span>
                             </p>
                         </div>
                     ) : (
