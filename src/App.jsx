@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     Search,
     ExternalLink,
@@ -18,6 +18,11 @@ export default function App() {
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('Todas');
     const [selectedTool, setSelectedTool] = useState(null);
+
+    // Reseteo de scroll al cambiar de herramienta
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [selectedTool]);
 
     const categories = ['Todas', ...new Set(TOOLS.map(t => t.category))];
 
