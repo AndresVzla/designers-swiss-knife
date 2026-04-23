@@ -80,10 +80,11 @@ const createColorObj = (h, s, l) => {
 
 // --- COMPONENTES UI ---
 
-const ColorBlock = ({ color }) => {
+const ColorBlock = ({ color, showMobileCodes }) => {
     const [copiedFormat, setCopiedFormat] = useState(null);
 
-    const copyText = (format, text) => {
+    const copyText = (e, format, text) => {
+        e.stopPropagation(); // Evitar que el clic cierre el panel en móvil
         navigator.clipboard.writeText(text);
         setCopiedFormat(format);
         setTimeout(() => setCopiedFormat(null), 1500);
@@ -91,20 +92,22 @@ const ColorBlock = ({ color }) => {
 
     const CopyButton = ({ format, value }) => (
         <button 
-            onClick={() => copyText(format, value)}
-            className="bg-black/50 hover:bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl text-white font-mono text-[10px] sm:text-xs shadow-lg flex items-center justify-between gap-2 min-w-[140px] transition-colors border border-white/10 hover:border-indigo-400 group/btn"
+            onClick={(e) => copyText(e, format, value)}
+            className="bg-black/60 hover:bg-black/80 backdrop-blur-md px-2 md:px-3 py-1.5 rounded-xl text-white font-mono text-[9px] md:text-xs shadow-lg flex items-center justify-between gap-1 md:gap-2 min-w-[70px] md:min-w-[140px] transition-colors border border-white/10 hover:border-indigo-400 group/btn"
         >
             <span className="text-zinc-400 font-bold group-hover/btn:text-white transition-colors">{format}</span>
-            <span className="font-bold truncate max-w-[90px] text-right">{copiedFormat === format ? '¡Copiado!' : value}</span>
+            <span className="font-bold truncate max-w-[60px] md:max-w-[90px] text-right">{copiedFormat === format ? '✓' : value}</span>
         </button>
     );
 
     return (
         <div 
-            className="group/color flex-1 flex flex-col items-center justify-center pb-0 transition-all duration-300 hover:flex-[1.5]"
+            className="group/color flex-1 flex flex-col items-center justify-center transition-all duration-300 md:hover:flex-[1.5]"
             style={{ backgroundColor: color.hex }}
         >
-            <div className="flex flex-col gap-1.5 opacity-0 group-hover/color:opacity-100 transition-all transform scale-95 group-hover/color:scale-100 duration-200">
+            <div className={`grid grid-cols-2 md:flex md:flex-col gap-2 md:gap-1.5 transition-all transform duration-200 
+                ${showMobileCodes ? 'opacity-100 scale-100' : 'opacity-0 scale-95 md:group-hover/color:opacity-100 md:group-hover/color:scale-100'}`}
+            >
                 <CopyButton format="HEX" value={color.hex} />
                 <CopyButton format="RGB" value={color.rgb} />
                 <CopyButton format="HSL" value={color.hsl} />
@@ -121,6 +124,7 @@ export const ColorPaletteEngine = () => {
     const [copiedImage, setCopiedImage] = useState(false);
     const [showPicker, setShowPicker] = useState(false);
     const [inputMode, setInputMode] = useState('HEX'); // HEX, RGB, HSL, CMYK
+    const [showMobileCodes, setShowMobileCodes] = useState(false);
     
     const pickerRef = useRef();
 
@@ -428,13 +432,23 @@ export const ColorPaletteEngine = () => {
             </div>
 
             {/* Visualización de la Paleta */}
-            <div className="flex h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-zinc-800 relative z-10">
+            <div className="flex flex-col md:flex-row h-[500px] md:h-[380px] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-zinc-800 relative z-10">
                 {palette.map((color, idx) => (
-                    <ColorBlock key={`${color.hex}-${idx}`} color={color} />
+                    <ColorBlock key={`${color.hex}-${idx}`} color={color} showMobileCodes={showMobileCodes} />
                 ))}
             </div>
+
+            {/* Botón Global para Códigos en Móvil */}
+            <div className="mt-6 flex md:hidden justify-center">
+                <button 
+                    onClick={() => setShowMobileCodes(!showMobileCodes)}
+                    className="w-full bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 px-6 py-4 rounded-xl text-sm font-bold border border-zinc-700 transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                >
+                    {showMobileCodes ? 'Ocultar Códigos' : 'Ver Códigos de Color'}
+                </button>
+            </div>
             
-            <div className="mt-6 flex justify-between text-xs text-zinc-500 font-medium">
+            <div className="mt-6 hidden md:flex justify-between text-xs text-zinc-500 font-medium">
                 <span>Pasa el cursor sobre un color para copiar su código en diferentes formatos.</span>
                 <span>Resolución de exportación de imagen: 1000x250px</span>
             </div>
