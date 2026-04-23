@@ -13,6 +13,7 @@ import { TOOLS } from './data/tools.js';
 import { ActionCard } from './components/ActionCard.jsx';
 import { ColorPaletteEngine } from './tools/ColorPaletteEngine.jsx';
 import { ImageColorPicker } from './tools/ImageColorPicker.jsx';
+import { TypePairingGuide } from './tools/TypePairingGuide.jsx';
 
 export default function App() {
     const [search, setSearch] = useState('');
@@ -157,6 +158,8 @@ export default function App() {
                             <ColorPaletteEngine />
                         ) : selectedTool.id === 'picker' ? (
                             <ImageColorPicker />
+                        ) : selectedTool.id === 'type' ? (
+                            <TypePairingGuide />
                         ) : (
                             <div className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
                                 <div className={`p-6 rounded-2xl bg-gradient-to-br ${selectedTool.color} text-white mb-6 shadow-2xl shadow-indigo-500/20`}>
