@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { TOOLS } from './data/tools.js';
 import { ActionCard } from './components/ActionCard.jsx';
+import { ColorPaletteEngine } from './tools/ColorPaletteEngine.jsx';
 
 export default function App() {
     const [search, setSearch] = useState('');
@@ -146,24 +147,24 @@ export default function App() {
                             Volver al inicio
                         </button>
 
-                        <div className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
-                            <div className={`p-6 rounded-2xl bg-gradient-to-br ${selectedTool.color} text-white mb-6 shadow-2xl shadow-indigo-500/20`}>
-                                <selectedTool.icon size={48} />
-                            </div>
-                            <h2 className="text-3xl font-bold text-white mb-2">{selectedTool.name}</h2>
-                            <p className="text-zinc-400 max-w-md mb-8">{selectedTool.description}</p>
+                        {selectedTool.id === 'palette' ? (
+                            <ColorPaletteEngine />
+                        ) : (
+                            <div className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
+                                <div className={`p-6 rounded-2xl bg-gradient-to-br ${selectedTool.color} text-white mb-6 shadow-2xl shadow-indigo-500/20`}>
+                                    <selectedTool.icon size={48} />
+                                </div>
+                                <h2 className="text-3xl font-bold text-white mb-2">{selectedTool.name}</h2>
+                                <p className="text-zinc-400 max-w-md mb-8">{selectedTool.description}</p>
 
-                            <div className="flex gap-4">
-                                <button className="bg-white text-black px-8 py-3 rounded-xl font-bold hover:bg-zinc-200 transition-colors flex items-center gap-2">
-                                    <Zap size={18} />
-                                    Ejecutar Acción
-                                </button>
-                                <button className="bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold hover:bg-zinc-700 transition-colors flex items-center gap-2">
-                                    <Info size={18} />
-                                    Guía de uso
-                                </button>
+                                <div className="flex gap-4">
+                                    <button className="bg-zinc-800 text-white px-8 py-3 rounded-xl font-bold opacity-50 cursor-not-allowed flex items-center gap-2">
+                                        <Info size={18} />
+                                        Próximamente
+                                    </button>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 )}
             </main>
