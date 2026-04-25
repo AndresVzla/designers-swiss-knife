@@ -204,7 +204,45 @@ export function PatternLab() {
         const blob = new Blob([svgString], { type: 'image/svg+xml' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.download = `pattern-${patternType}.svg`;
+        link.download = `tile-${patternType}.svg`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const downloadFullSVG = () => {
+        // Create a large SVG that tiles the pattern
+        const w = 1200;
+        const h = 1200;
+        
+        // Pattern size for the definition
+        let pW = size;
+        let pH = size;
+        if (patternType === 'honeycomb') {
+            const r = size / 2;
+            pW = r * 3;
+            pH = (r * Math.sqrt(3)) * 2;
+        }
+
+        const fullSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
+    <defs>
+        <pattern id="fullPattern" 
+            width="${pW}" 
+            height="${pH}" 
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(${rotation})">
+            ${svgString.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '')}
+        </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="${bgColor}" />
+    <rect width="100%" height="100%" fill="url(#fullPattern)" opacity="${opacity / 100}" />
+</svg>`.trim();
+
+        const blob = new Blob([fullSvg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `wallpaper-${patternType}.svg`;
         link.href = url;
         link.click();
         URL.revokeObjectURL(url);
@@ -452,20 +490,29 @@ export function PatternLab() {
                 </div>
 
                 {/* Actions Footer */}
-                <div className="p-5 md:p-6 border-t border-zinc-800 bg-zinc-900/80 space-y-3">
+                <div className="p-5 md:p-6 border-t border-zinc-800 bg-zinc-900/80 space-y-4">
                     <button onClick={copyCSS}
-                        className={`w-full py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] ${
+                        className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] ${
                             copied
                             ? 'bg-emerald-600 text-white'
                             : 'bg-orange-600 hover:bg-orange-500 text-white shadow-lg shadow-orange-600/20'
                         }`}>
-                        {copied ? <><Check size={16} /> CSS Copiado</> : <><Copy size={16} /> Copiar CSS</>}
+                        {copied ? <><Check size={18} /> CSS Copiado</> : <><Copy size={18} /> Copiar Código CSS</>}
                     </button>
                     
-                    <button onClick={downloadSVG}
-                        className="w-full py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2 active:scale-[0.98]">
-                        <Download size={16} /> Descargar Tile (SVG)
-                    </button>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onClick={downloadSVG}
+                            className="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-zinc-700 active:scale-[0.95]"
+                            title="Descargar baldosa pequeña para desarrollo">
+                            <Download size={16} /> Tile (SVG)
+                        </button>
+                        
+                        <button onClick={downloadFullSVG}
+                            className="py-3 px-4 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 border border-zinc-700 active:scale-[0.95]"
+                            title="Descargar fondo completo 1200x1200px">
+                            <Layers size={16} /> Wallpaper
+                        </button>
+                    </div>
                 </div>
             </div>
 
