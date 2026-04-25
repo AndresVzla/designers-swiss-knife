@@ -7,11 +7,11 @@ import TracerWorker from './tracerWorker.js?worker';
 
 // ── Supported formats ────────────────────────────────────────
 const FORMATS = [
-    { id: 'png',  label: 'PNG',  mime: 'image/png',  ext: '.png',  supportsQuality: false, desc: 'Lossless · Transparencia' },
-    { id: 'jpg',  label: 'JPG',  mime: 'image/jpeg', ext: '.jpg',  supportsQuality: true,  desc: 'Comprimido · Fotos' },
-    { id: 'webp', label: 'WebP', mime: 'image/webp', ext: '.webp', supportsQuality: true,  desc: 'Moderno · Liviano' },
-    { id: 'bmp',  label: 'BMP',  mime: 'image/bmp',  ext: '.bmp',  supportsQuality: false, desc: 'Sin compresión' },
-    { id: 'svg',  label: 'SVG',  mime: 'image/svg+xml', ext: '.svg', supportsQuality: false, desc: 'Vectorizado (Tracer)' },
+    { id: 'png', label: 'PNG', mime: 'image/png', ext: '.png', supportsQuality: false, desc: 'Lossless · Transparencia' },
+    { id: 'jpg', label: 'JPG', mime: 'image/jpeg', ext: '.jpg', supportsQuality: true, desc: 'Comprimido · Fotos' },
+    { id: 'webp', label: 'WebP', mime: 'image/webp', ext: '.webp', supportsQuality: true, desc: 'Moderno · Liviano' },
+    { id: 'bmp', label: 'BMP', mime: 'image/bmp', ext: '.bmp', supportsQuality: false, desc: 'Sin compresión' },
+    { id: 'svg', label: 'SVG', mime: 'image/svg+xml', ext: '.svg', supportsQuality: false, desc: 'Vectorizado (Tracer)' },
 ];
 
 const ACCEPT = 'image/png,image/jpeg,image/webp,image/bmp,image/gif,image/svg+xml';
@@ -37,10 +37,10 @@ const getFormatFromMime = (mime) => {
 
 // ── Component ────────────────────────────────────────────────
 export function SwiftConverter() {
-    const [sourceFiles, setSourceFiles] = useState([]);       
+    const [sourceFiles, setSourceFiles] = useState([]);
     const [outputFormat, setOutputFormat] = useState('png');
     const [quality, setQuality] = useState(92);
-    const [convertedBlobs, setConvertedBlobs] = useState([]); 
+    const [convertedBlobs, setConvertedBlobs] = useState([]);
     const [converting, setConverting] = useState(false);
     const [copied, setCopied] = useState(false);
     const [isDragging, setIsDragging] = useState(false);
@@ -55,11 +55,16 @@ export function SwiftConverter() {
     const loadImages = useCallback(async (filesList) => {
         setError(null);
         setConvertedBlobs([]);
-        
-        const validFiles = Array.from(filesList).filter(f => f.type.startsWith('image/') && f.size <= 50 * 1024 * 1024);
+
+        let validFiles = Array.from(filesList).filter(f => f.type.startsWith('image/') && f.size <= 50 * 1024 * 1024);
         if (validFiles.length === 0) {
             setError('Archivos inválidos o mayores a 50MB.');
             return;
+        }
+
+        if (validFiles.length > 50) {
+            setError(`Se seleccionaron ${validFiles.length} imágenes. Solo se cargarán las primeras 50 para mantener el rendimiento estable.`);
+            validFiles = validFiles.slice(0, 50);
         }
 
         sourceFiles.forEach(f => URL.revokeObjectURL(f.url));
@@ -75,8 +80,8 @@ export function SwiftConverter() {
                 img.onerror = () => { URL.revokeObjectURL(url); reject(); };
                 img.src = url;
             });
-        }).filter(Boolean)); 
-        
+        }).filter(Boolean));
+
         if (loadedFiles.length > 0) {
             setSourceFiles(loadedFiles);
             const current = getFormatFromMime(loadedFiles[0].file.type).toLowerCase();
@@ -126,7 +131,7 @@ export function SwiftConverter() {
             blob = await new Promise((resolve, reject) => {
                 const worker = new TracerWorker();
                 worker.postMessage({
-                    imageData, 
+                    imageData,
                     options: { ltres: 1, qtres: 1, pathomit: 8, colorsampling: 2, numberofcolors: 16, mincolorratio: 0, colorquantcycles: 3 }
                 });
                 worker.onmessage = (e) => {
@@ -143,7 +148,7 @@ export function SwiftConverter() {
                 canvas.toBlob(resolve, fmt.mime, fmt.supportsQuality ? quality / 100 : undefined);
             });
         }
-        
+
         return { blob, url: URL.createObjectURL(blob), size: blob.size, name: source.name };
     };
 
@@ -152,9 +157,9 @@ export function SwiftConverter() {
         if (sourceFiles.length === 0) return;
         setConverting(true);
         setError(null);
-        
+
         convertedBlobs.forEach(b => URL.revokeObjectURL(b.url));
-        
+
         try {
             const results = [];
             for (const source of sourceFiles) {
@@ -185,7 +190,7 @@ export function SwiftConverter() {
     const downloadResult = () => {
         if (convertedBlobs.length === 0) return;
         const fmt = FORMATS.find(f => f.id === outputFormat);
-        
+
         convertedBlobs.forEach((cb) => {
             const baseName = cb.name.replace(/\.[^/.]+$/, '');
             const link = document.createElement('a');
@@ -236,7 +241,7 @@ export function SwiftConverter() {
     const selectedFormat = FORMATS.find(f => f.id === outputFormat);
     const mainSource = sourceFiles[0];
     const mainConverted = convertedBlobs[0];
-    
+
     const totalSourceSize = sourceFiles.reduce((acc, f) => acc + f.size, 0);
     const totalConvertedSize = convertedBlobs.reduce((acc, b) => acc + b.size, 0);
     const savings = totalSourceSize > 0 && totalConvertedSize > 0
@@ -298,7 +303,7 @@ export function SwiftConverter() {
                                     {isDragging ? 'Suelta tus imágenes aquí' : 'Arrastra imágenes (Batch soportado)'}
                                 </p>
                                 <p className="text-zinc-500 text-xs">
-                                    JPG · PNG · WebP · BMP · GIF · SVG
+                                    JPG · PNG · WebP · BMP · GIF · SVG (máx. 50MB y 50 archivos)
                                 </p>
                             </div>
                             <button className="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition-colors">
@@ -323,7 +328,7 @@ export function SwiftConverter() {
                                     Añadir más
                                 </button>
                                 <input ref={fileInputRef} type="file" accept={ACCEPT} multiple
-                                    className="hidden" onChange={(e) => { if (e.target.files?.length) loadImages([...sourceFiles.map(f=>f.file), ...e.target.files]); }} />
+                                    className="hidden" onChange={(e) => { if (e.target.files?.length) loadImages([...sourceFiles.map(f => f.file), ...e.target.files]); }} />
                             </div>
 
                             {/* Preview thumbnail */}
@@ -411,7 +416,7 @@ export function SwiftConverter() {
                             className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${converting
                                 ? 'bg-zinc-700 text-zinc-400 cursor-wait'
                                 : 'bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-600/20 active:scale-[0.98]'
-                            }`}>
+                                }`}>
                             {converting ? (
                                 <><RefreshCw size={15} className="animate-spin" /> Procesando...</>
                             ) : (
@@ -450,7 +455,7 @@ export function SwiftConverter() {
                             style={{ backgroundImage: 'linear-gradient(45deg, #1a1a1e 25%, transparent 25%), linear-gradient(-45deg, #1a1a1e 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1e 75%), linear-gradient(-45deg, transparent 75%, #1a1a1e 75%)', backgroundSize: '16px 16px', backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px' }}>
                             <img src={mainConverted.url} alt="Converted"
                                 className={`max-w-full max-h-[300px] lg:max-h-[400px] object-contain rounded-lg shadow-2xl transition-opacity duration-300 ${converting ? 'opacity-30' : 'opacity-100'}`} />
-                            
+
                             {converting && (
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <RefreshCw size={32} className="text-violet-500 animate-spin" />
@@ -469,7 +474,7 @@ export function SwiftConverter() {
                                     className={`flex-1 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] ${copied
                                         ? 'bg-emerald-600 text-white'
                                         : 'bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-500/20'
-                                    }`}>
+                                        }`}>
                                     {copied ? <><Check size={15} /> Copiado</> : <><Copy size={15} /> Copiar</>}
                                 </button>
                             )}
