@@ -178,7 +178,13 @@ export function PatternLab() {
         return `data:image/svg+xml,${encoded}`;
     }, [svgString]);
 
-    const cssCode = `background-image: url("${dataUri}");\nbackground-color: ${bgColor};\nbackground-size: ${size}px ${size}px;\nopacity: ${opacity / 100};`;
+    const cssCode = `/* Capa de Fondo */
+background-color: ${bgColor};
+
+/* Capa de Patrón (Aplicar sobre el fondo) */
+background-image: url("${dataUri}");
+background-size: ${size}px ${size}px;
+opacity: ${opacity / 100};`;
 
     // ── Actions ────────────────────────────────────────────────
     const randomize = () => {
@@ -517,15 +523,17 @@ export function PatternLab() {
             </div>
 
             {/* ── RIGHT: Preview ── */}
-            <div className="flex-1 relative min-h-[400px] bg-zinc-950 overflow-hidden">
-                {/* The actual repeating pattern background */}
+            <div className="flex-1 relative min-h-[400px] overflow-hidden" style={{ backgroundColor: bgColor }}>
+                {/* Layer 1: Solid Background Color */}
+                <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
+
+                {/* Layer 2: The actual repeating pattern background with rotation and opacity */}
                 <div 
                     className="absolute inset-[-200%] transition-transform duration-500 ease-out"
                     style={{ 
                         backgroundImage: `url("${dataUri}")`,
                         transform: `rotate(${rotation}deg) scale(1.5)`,
                         opacity: opacity / 100,
-                        backgroundColor: bgColor
                     }}
                 />
 
