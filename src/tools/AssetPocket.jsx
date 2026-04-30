@@ -557,10 +557,6 @@ export function AssetPocket() {
                         </div>
 
 
-                        {/* Usage hint */}
-                        <p className="text-zinc-600 text-[10px] text-center mt-auto pt-2 border-t border-zinc-800">
-                            💡 Arrastra cualquier icono para usarlo con Drag & Drop
-                        </p>
                     </div>
                 </div>
             )}
