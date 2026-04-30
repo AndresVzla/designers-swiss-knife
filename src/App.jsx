@@ -7,7 +7,13 @@ import {
     MousePointer2,
     Zap,
     RefreshCw,
-    Info
+    Info,
+    Heart,
+    Copy,
+    Check,
+    X,
+    CreditCard,
+    Wallet
 } from 'lucide-react';
 import { TOOLS } from './data/tools.js';
 import { ActionCard } from './components/ActionCard.jsx';
@@ -24,6 +30,8 @@ export default function App() {
     const [search, setSearch] = useState('');
     const [activeCategory, setActiveCategory] = useState('Todas');
     const [selectedTool, setSelectedTool] = useState(null);
+    const [showDonationModal, setShowDonationModal] = useState(false);
+    const [copiedEmail, setCopiedEmail] = useState(false);
 
     // Reseteo de scroll al cambiar de herramienta
     useEffect(() => {
@@ -201,8 +209,101 @@ export default function App() {
                     <div className="flex gap-8 text-xs font-bold tracking-widest text-zinc-500 uppercase">
                         <a href="#" className="hover:text-white transition-colors">Privacidad</a>
                         <a href="#" className="hover:text-white transition-colors">Términos</a>
-                        <a href="#" className="hover:text-white transition-colors flex items-center gap-1">Donar <ExternalLink size={12} /></a>
+                        <button 
+                            onClick={() => setShowDonationModal(true)}
+                            className="hover:text-indigo-400 transition-colors flex items-center gap-1.5 group"
+                        >
+                            Donar <Heart size={12} className="group-hover:fill-current group-hover:scale-110 transition-all" />
+                        </button>
                     </div>
+
+                    {/* Modal de Donación Premium */}
+                    {showDonationModal && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+                            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowDonationModal(false)} />
+                            <div className="relative bg-zinc-900 border border-zinc-800 rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95 duration-300">
+                                <button 
+                                    onClick={() => setShowDonationModal(false)}
+                                    className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                <div className="text-center mb-8">
+                                    <div className="w-16 h-16 bg-indigo-600/20 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <Heart size={32} fill="currentColor" />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2">Apoya el Proyecto</h3>
+                                    <p className="text-zinc-500 text-sm">Tu apoyo ayuda a mantener estas herramientas gratuitas y en constante desarrollo.</p>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {/* PayPal */}
+                                    <div className="group bg-zinc-950 border border-zinc-800 rounded-2xl p-4 hover:border-blue-500/50 transition-all">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+                                                    <CreditCard size={18} />
+                                                </div>
+                                                <span className="font-bold text-white">PayPal</span>
+                                            </div>
+                                            <a 
+                                                href={`https://www.paypal.com/paypalme/AndresVzla360`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="text-[10px] font-bold text-blue-400 hover:underline uppercase tracking-widest"
+                                            >
+                                                Enviar pago
+                                            </a>
+                                        </div>
+                                        <div className="flex items-center justify-between bg-black/40 rounded-xl px-3 py-2 border border-zinc-900">
+                                            <span className="text-xs font-mono text-zinc-400">AndresVzla360@gmail.com</span>
+                                            <button 
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText('AndresVzla360@gmail.com');
+                                                    setCopiedEmail(true);
+                                                    setTimeout(() => setCopiedEmail(false), 2000);
+                                                }}
+                                                className="text-zinc-500 hover:text-white transition-colors"
+                                            >
+                                                {copiedEmail ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Binance */}
+                                    <div className="group bg-zinc-950 border border-zinc-800 rounded-2xl p-4 hover:border-amber-500/50 transition-all">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                                                    <Wallet size={18} />
+                                                </div>
+                                                <span className="font-bold text-white">Binance</span>
+                                            </div>
+                                            <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">Pay ID / Email</span>
+                                        </div>
+                                        <div className="flex items-center justify-between bg-black/40 rounded-xl px-3 py-2 border border-zinc-900">
+                                            <span className="text-xs font-mono text-zinc-400">AndresVzla360@gmail.com</span>
+                                            <button 
+                                                onClick={() => {
+                                                    navigator.clipboard.writeText('AndresVzla360@gmail.com');
+                                                    setCopiedEmail(true);
+                                                    setTimeout(() => setCopiedEmail(false), 2000);
+                                                }}
+                                                className="text-zinc-500 hover:text-white transition-colors"
+                                            >
+                                                {copiedEmail ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p className="mt-8 text-center text-[10px] text-zinc-600 font-medium uppercase tracking-widest">
+                                    ¡Gracias por ser parte de esto!
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </footer>
         </div>
