@@ -13,7 +13,10 @@ import {
     Check,
     X,
     CreditCard,
-    Wallet
+    Wallet,
+    Users,
+    Code,
+    Palette
 } from 'lucide-react';
 import { TOOLS } from './data/tools.js';
 import { ActionCard } from './components/ActionCard.jsx';
@@ -31,6 +34,7 @@ export default function App() {
     const [activeCategory, setActiveCategory] = useState('Todas');
     const [selectedTool, setSelectedTool] = useState(null);
     const [showDonationModal, setShowDonationModal] = useState(false);
+    const [showCreatorsModal, setShowCreatorsModal] = useState(false);
     const [copiedEmail, setCopiedEmail] = useState(false);
 
     // Reseteo de scroll al cambiar de herramienta
@@ -207,8 +211,12 @@ export default function App() {
                         © 2026 Designer's Swiss Knife. <span className="hidden sm:inline">Hecho por diseñadores para diseñadores.</span>
                     </div>
                     <div className="flex gap-8 text-xs font-bold tracking-widest text-zinc-500 uppercase">
-                        <a href="#" className="hover:text-white transition-colors">Privacidad</a>
-                        <a href="#" className="hover:text-white transition-colors">Términos</a>
+                        <button 
+                            onClick={() => setShowCreatorsModal(true)}
+                            className="hover:text-white transition-colors"
+                        >
+                            Creadores
+                        </button>
                         <button 
                             onClick={() => setShowDonationModal(true)}
                             className="hover:text-indigo-400 transition-colors flex items-center gap-1.5 group"
@@ -216,6 +224,61 @@ export default function App() {
                             Donar <Heart size={12} className="group-hover:fill-current group-hover:scale-110 transition-all" />
                         </button>
                     </div>
+
+                    {/* Modal de Creadores */}
+                    {showCreatorsModal && (
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+                            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowCreatorsModal(false)} />
+                            <div className="relative bg-zinc-900 border border-zinc-800 rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in zoom-in-95 duration-300">
+                                <button 
+                                    onClick={() => setShowCreatorsModal(false)}
+                                    className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                <div className="text-center mb-8">
+                                    <div className="w-16 h-16 bg-indigo-600/20 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                        <Users size={32} />
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white mb-2">Detrás del Proyecto</h3>
+                                    <p className="text-zinc-500 text-sm">Este proyecto es el resultado de la colaboración entre ingeniería y diseño.</p>
+                                </div>
+
+                                <div className="space-y-4">
+                                    {/* Andres Ignacio Soto Franco */}
+                                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 group hover:border-indigo-500/30 transition-all">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-indigo-600/20">
+                                                <Code size={24} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-white group-hover:text-indigo-400 transition-colors">Andres Ignacio Soto Franco</h4>
+                                                <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">Ingeniero en Informática</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Diego Ivanoff */}
+                                    <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 group hover:border-pink-500/30 transition-all">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-xl bg-pink-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-pink-600/20">
+                                                <Palette size={24} />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-white group-hover:text-pink-400 transition-colors">Diego Ivanoff</h4>
+                                                <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">Diseñador Gráfico</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p className="mt-8 text-center text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em]">
+                                    Hecho con pasión en 2026
+                                </p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Modal de Donación Premium */}
                     {showDonationModal && (
