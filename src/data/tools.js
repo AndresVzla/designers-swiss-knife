@@ -16,7 +16,7 @@ export const TOOLS = [
         description: 'Generador de armonías cromáticas. Exporta paletas completas como imagen.',
         icon: Palette,
         category: 'Color',
-        status: 'Popular',
+        status: 'Esencial',
         color: 'from-pink-500 to-rose-500'
     },
     {
@@ -25,7 +25,7 @@ export const TOOLS = [
         description: 'Extrae códigos HEX/RGB/HSL de fotos. Soporte para Eye-dropper nativo.',
         icon: Pipette,
         category: 'Color',
-        status: 'Nuevo',
+        status: 'Preciso',
         color: 'from-purple-500 to-indigo-500'
     },
     {
@@ -34,7 +34,7 @@ export const TOOLS = [
         description: 'Sugerencias de combinaciones de Google Fonts con previsualización real.',
         icon: Type,
         category: 'Tipografía',
-        status: 'Útil',
+        status: 'Armónico',
         color: 'from-blue-500 to-cyan-500'
     },
     {
@@ -43,7 +43,7 @@ export const TOOLS = [
         description: 'Buscador de iconos y vectores SVG con soporte Drag & Drop.',
         icon: Package,
         category: 'Assets',
-        status: 'Nuevo',
+        status: 'Biblioteca',
         color: 'from-emerald-500 to-teal-500'
     },
     {
@@ -52,7 +52,7 @@ export const TOOLS = [
         description: 'Generador visual de degradados de malla complejos en alta resolución.',
         icon: Move,
         category: 'Generadores',
-        status: 'Creativo',
+        status: 'Vanguardista',
         color: 'from-blue-600 to-indigo-600'
     },
     {
@@ -61,7 +61,7 @@ export const TOOLS = [
         description: 'Creador de fondos repetibles y patrones geométricos personalizados.',
         icon: Grid3X3,
         category: 'Generadores',
-        status: 'Nuevo',
+        status: 'Infinito',
         color: 'from-red-500 to-orange-500'
     },
     {
@@ -70,7 +70,7 @@ export const TOOLS = [
         description: 'Guía de medidas actualizadas y marcos de referencia para redes sociales.',
         icon: Layout,
         category: 'Referencia',
-        status: 'Básico',
+        status: 'Guía 2026',
         color: 'from-sky-500 to-blue-500'
     },
     {
@@ -79,7 +79,7 @@ export const TOOLS = [
         description: 'Conversor y optimizador inmediato entre JPG, PNG y SVG. Sin subidas al servidor.',
         icon: RefreshCw,
         category: 'Conversión',
-        status: 'Rápido',
+        status: 'Optimizado',
         color: 'from-violet-500 to-purple-500'
     }
 ];
