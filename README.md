@@ -17,12 +17,11 @@
 1.  🎨 **Color Palette Engine:** Generador de armonías cromáticas con copia rápida de paleta completa.
 2.  🧪 **Image Color Picker:** Extractor de códigos Hex/RGB/HSL con soporte para Eye-dropper nativo.
 3.  🔡 **Type Pairing Guide:** Sugerencias de combinaciones de Google Fonts con previsualización real.
-4.  📉 **Image Optimizer:** Compresión inteligente 100% local.
-5.  📦 **Asset Pocket:** Buscador de iconos y vectores SVG con soporte Drag & Drop.
-6.  🌀 **Mesh Gradient Tool:** Generador visual de degradados de malla en alta resolución.
-7.  🏁 **Pattern Lab:** Creador de fondos repetibles y texturas.
-8.  📏 **Social Blueprint:** Guía de medidas actualizadas para redes sociales con marcos de referencia.
-9.  🔄 **Swift Converter:** Conversor inmediato entre JPG, PNG y SVG sin servidor.
+4.  📦 **Asset Pocket:** Buscador de iconos y vectores SVG con soporte Drag & Drop.
+5.  🌀 **Mesh Gradient Tool:** Generador visual de degradados de malla en alta resolución.
+6.  🏁 **Pattern Lab:** Creador de fondos repetibles y texturas.
+7.  📏 **Social Blueprint:** Guía de medidas actualizadas para redes sociales con marcos de referencia.
+8.  🔄 **Swift Converter:** Conversor y optimizador inmediato entre JPG, PNG y SVG sin servidor.
 
 ---
 

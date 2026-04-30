@@ -39,15 +39,6 @@ export const TOOLS = [
         color: 'from-blue-500 to-cyan-500'
     },
     {
-        id: 'optimizer',
-        name: 'Image Optimizer',
-        description: 'Compresión inteligente sin pérdida de calidad. Copia el resultado directo.',
-        icon: Zap,
-        category: 'Imagen',
-        status: 'Esencial',
-        color: 'from-amber-500 to-orange-500'
-    },
-    {
         id: 'assets',
         name: 'Asset Pocket',
         description: 'Buscador de iconos y vectores SVG con soporte Drag & Drop.',
@@ -86,7 +77,7 @@ export const TOOLS = [
     {
         id: 'converter',
         name: 'Swift Converter',
-        description: 'Conversor inmediato entre JPG, PNG y SVG. Sin subidas al servidor.',
+        description: 'Conversor y optimizador inmediato entre JPG, PNG y SVG. Sin subidas al servidor.',
         icon: RefreshCw,
         category: 'Conversión',
         status: 'Rápido',
