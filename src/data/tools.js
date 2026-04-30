@@ -2,7 +2,6 @@ import {
     Palette,
     Pipette,
     Type,
-    Zap,
     Package,
     Move,
     Grid3X3,

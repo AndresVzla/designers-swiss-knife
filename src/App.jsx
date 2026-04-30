@@ -17,6 +17,7 @@ import { TypePairingGuide } from './tools/TypePairingGuide.jsx';
 import { MeshGradientTool } from './tools/MeshGradientTool.jsx';
 import { SwiftConverter } from './tools/SwiftConverter.jsx';
 import { PatternLab } from './tools/PatternLab.jsx';
+import { AssetPocket } from './tools/AssetPocket.jsx';
 
 export default function App() {
     const [search, setSearch] = useState('');
@@ -169,6 +170,8 @@ export default function App() {
                             <SwiftConverter />
                         ) : selectedTool.id === 'pattern' ? (
                             <PatternLab />
+                        ) : selectedTool.id === 'assets' ? (
+                            <AssetPocket />
                         ) : (
                             <div className="bg-zinc-900/40 border border-zinc-800 rounded-3xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
                                 <div className={`p-6 rounded-2xl bg-gradient-to-br ${selectedTool.color} text-white mb-6 shadow-2xl shadow-indigo-500/20`}>
