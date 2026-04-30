@@ -16,7 +16,8 @@ import {
     Wallet,
     Users,
     Code,
-    Palette
+    Palette,
+    Mail
 } from 'lucide-react';
 import { TOOLS } from './data/tools.js';
 import { ActionCard } from './components/ActionCard.jsx';
@@ -254,7 +255,11 @@ export default function App() {
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-white group-hover:text-indigo-400 transition-colors">Andres Ignacio Soto Franco</h4>
-                                                <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">Ingeniero en Informática</p>
+                                                <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-2">Ingeniero en Informática</p>
+                                                <a href="mailto:AndresVzla360@gmail.com" className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors">
+                                                    <Mail size={12} className="text-indigo-500" />
+                                                    AndresVzla360@gmail.com
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -267,7 +272,11 @@ export default function App() {
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-white group-hover:text-pink-400 transition-colors">Diego Ivanoff</h4>
-                                                <p className="text-zinc-500 text-xs font-medium uppercase tracking-wider">Diseñador Gráfico</p>
+                                                <p className="text-zinc-500 text-[10px] font-medium uppercase tracking-wider mb-2">Diseñador Gráfico</p>
+                                                <a href="mailto:Dieg4razx@gmail.com" className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors">
+                                                    <Mail size={12} className="text-pink-500" />
+                                                    Dieg4razx@gmail.com
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
