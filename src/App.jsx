@@ -109,9 +109,7 @@ export default function App() {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
-                                <div className="absolute right-3 top-3 hidden sm:flex items-center gap-1.5 px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-[10px] text-zinc-400 font-mono">
-                                    <span>ESC</span>
-                                </div>
+
                             </div>
 
                             {/* Atributos de Valor */}
